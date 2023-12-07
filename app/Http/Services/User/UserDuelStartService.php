@@ -25,9 +25,7 @@ class UserDuelStartService
 
         $this->store($userId, $user->name, fake()->name());
 
-        return response()->json([
-            'message' => 'Success!'
-        ]);
+        return response()->json();
     }
     private function store(int $userId, string $playerName, string $opponentName): void
     {
