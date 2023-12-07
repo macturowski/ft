@@ -14,6 +14,6 @@ class Controller extends BaseController
 
     protected function errorResponse($message = [], $code = 400): JsonResponse
     {
-        return response()->json(['error' => $message], 400);
+        return response()->json(['error' => $message], $code);
     }
 }

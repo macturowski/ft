@@ -18,7 +18,6 @@ class UserDuelActiveService
     public function __construct(
         private User $user,
         private Duel $duel,
-        private LevelService $userLevelService,
         private CardService $cardService,
     ) {}
 

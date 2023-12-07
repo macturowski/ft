@@ -39,8 +39,9 @@ class UserDuelActionService
         $opponentCardsIds = $duel->details->pluck('opponent_card_id')->toArray();
         $opponentavailableCards = array_column($this->cardService->getCardsExceptIds($opponentCardsIds), 'id');
         shuffle($opponentavailableCards);
-        $opponentCard = $this->cardService->getCardById($opponentavailableCards[0]);
 
+        $opponentCard = $this->cardService->getCardById($opponentavailableCards[0]);
+        
         $round = $duel->details->count() + 1;
 
         $this->store(
@@ -55,8 +56,9 @@ class UserDuelActionService
         if($round == 5) {
             $yourPoints = $duel->details->sum('your_points') + $yourCard['power'];
             $opponentPoints = $duel->details->sum('opponent_points') + $yourCard['power'];
+            $won = $yourPoints > $opponentPoints ? 1 : 0;
 
-            $this->closeDuel($duel, (int) $yourPoints > $opponentPoints);
+            $this->closeDuel($duel, $won);
         }
 
         return response()->json();
