@@ -46,14 +46,7 @@ class UserDuelActionService
         $opponentNewCard = $this->cardService->getCardById($opponentNewCardId);
         $round = $duel->getRounds() + 1;
 
-        $this->store(
-            $round,
-            $yourNewCard['power'],
-            $opponentNewCard['power'],
-            $yourNewCard['id'],
-            $opponentNewCard['id'],
-            $duel,
-        );
+        $this->store($round, $yourNewCard['power'], $opponentNewCard['power'], $yourNewCard['id'], $opponentNewCard['id'], $duel);
         
         if($round == self::MAX_ROUNDS) {
             $yourPoints = $duel->yourPoints() + $yourNewCard['power'];

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\Http\Requests\UserDuelStartRequest;
-use App\Http\Services\User\UserDuelStartService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserDuelStartRequest;
+use App\Http\Services\User\UserDuelStartService;
 
 class UserDuelStartController extends Controller
 {
