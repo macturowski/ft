@@ -50,7 +50,7 @@ class UserDuelActionService
             $opponentNewCard['power'],
             $yourNewCard['id'],
             $opponentNewCard['id'],
-            $duel->id,
+            $duel,
         );
         
         if($round == self::MAX_ROUNDS) {
@@ -64,7 +64,7 @@ class UserDuelActionService
         return response()->json();
     }
 
-    private function store(int $round, int $yourPoints, int $opponentPoints, int $yourCardId, int $opponentCardId, int $duelId): void
+    private function store(int $round, int $yourPoints, int $opponentPoints, int $yourCardId, int $opponentCardId, Duel $duel): void
     {
         $this->duelDetails
             ->create([
@@ -73,14 +73,14 @@ class UserDuelActionService
                 'opponent_points' => $opponentPoints,
                 'your_card_id' => $yourCardId,
                 'opponent_card_id' => $opponentCardId,
-                'duel_id' => $duelId,
+                'duel_id' => $duel->id,
             ]);
     }
 
     private function closeDuel(Duel $duel, int $won): void
     {
         $duel->update([
-            'status' => 1,
+            'status' => Duel::STATUS_FINISHED,
             'won' => $won,
         ]); 
     }
@@ -97,7 +97,7 @@ class UserDuelActionService
     {
         return $this->duel
             ->with('details')
-            ->whereStatus(0)
+            ->whereStatus(Duel::STATUS_ACTIVE)
             ->whereUserId($userId)
             ->first();
     }

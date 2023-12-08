@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 
 class Duel extends Model
-{
+{   
     use HasFactory;
+
+    public const STATUS_ACTIVE = 0;
+    public const STATUS_FINISHED = 1;
 
     protected $fillable = [
         'player_name',
@@ -21,6 +25,11 @@ class Duel extends Model
     public function details(): HasMany
     {
         return $this->hasMany(DuelDetails::class);
+    }
+
+    public function scopeWasWon(Builder $query): void
+    {
+        $query->where('won', '=', 1);
     }
 
     public function isClosed(): bool

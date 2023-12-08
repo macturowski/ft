@@ -11,6 +11,8 @@ use App\Exceptions\UserNotFoundException;
 
 class UserDuelStartService
 {
+    private const MIN_USER_CARDS_COUNT = 5;
+
     public function __construct(
         private User $user,
         private Duel $duel,
@@ -20,7 +22,7 @@ class UserDuelStartService
     {
         $user = $this->getUser($userId);
         throw_if(is_null($user), new UserNotFoundException);
-        throw_if($user->getCardsCount() < 5, new UserHasTooFewCards);
+        throw_if($user->getCardsCount() < self::MIN_USER_CARDS_COUNT, new UserHasTooFewCards);
         throw_if($user->getDuelsCount() > 0, new UserHasActiveDuel);
 
         $this->store($userId, $user->name, fake()->name());
@@ -43,7 +45,7 @@ class UserDuelStartService
             ->with([
                 'cards',
                 'duels' => function ($query) {
-                    $query->whereStatus(0);
+                    $query->whereStatus(Duel::STATUS_ACTIVE);
                 }
             ])
             ->whereId($userId)

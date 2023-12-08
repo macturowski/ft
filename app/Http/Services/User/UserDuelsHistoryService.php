@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\User;
 
+use App\Models\Duel;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
@@ -33,7 +34,7 @@ class UserDuelsHistoryService
         return $this->user
             ->with([
                 'duels' => function ($query) {
-                    $query->whereStatus(1);
+                    $query->whereStatus(Duel::STATUS_FINISHED);
                 }])
             ->whereId($userId)
             ->first();

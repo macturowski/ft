@@ -53,7 +53,7 @@ class UserCardService
             ->with([
                 'cards', 
                 'duels' => function ($query) {
-                    $query->whereWon(1);
+                    $query->wasWon(1);
                 }
             ])
             ->whereId($userId)

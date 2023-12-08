@@ -37,7 +37,7 @@ class UserDataService
             ->with([
                 'cards', 
                 'duels' => function ($query) {
-                    $query->whereWon(1);
+                    $query->wasWon();
                 }
             ])
             ->whereId($userId)

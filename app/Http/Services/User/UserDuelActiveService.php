@@ -28,18 +28,12 @@ class UserDuelActiveService
         
         $duel = $this->getDuel($userId);
         throw_if(is_null($duel), new UserDuelNotFoundException);
-
-        if($duel->isClosed()) {
-            return response()->json([
-                'status' => self::FINISHED_STATUS_FLAG,
-            ]);
-        }
         
         return response()->json([
-            'round' => $duel->getRounds() + 1,
+            'round' => $duel->isClosed() ? $duel->getRounds() : $duel->getRounds() + 1,
             'your_points' => $duel->yourPoints(),
             'opponent_points' => $duel->opponentPoints(),
-            'status' => self::ACTIVE_STATUS_FLAG,
+            'status' => $duel->isClosed() ? self::FINISHED_STATUS_FLAG : self::ACTIVE_STATUS_FLAG,
             'cards' => $this->cardService->getCardsByIds($user->getCardsIds()),
         ]);
     }
