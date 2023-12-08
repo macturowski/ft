@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use App\Http\Services\Card\CardService;
 use App\Exceptions\UserNotFoundException;
-use App\Http\Services\Level\LevelService;
 use App\Exceptions\UserDuelNotFoundException;
 
 class UserDuelActiveService

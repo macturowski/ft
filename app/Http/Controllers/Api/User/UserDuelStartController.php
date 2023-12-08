@@ -6,9 +6,6 @@ use App\Http\Requests\UserDuelStartRequest;
 use App\Http\Services\User\UserDuelStartService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserDuelActionRequest;
-use App\Http\Services\User\UserDuelActionService;
-
 
 class UserDuelStartController extends Controller
 {

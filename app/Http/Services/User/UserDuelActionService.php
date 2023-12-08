@@ -42,11 +42,8 @@ class UserDuelActionService
             throw_if(in_array($yourNewCard['id'],  $duel->getYourCardsIds()), new UserCardUsedBeforeException);
         }
 
-        $opponentAvailableCards = array_column($this->cardService->getCardsExceptIds($duel->getOpponentCardsIds()), 'id');
-        shuffle($opponentAvailableCards);
-
-        $opponentNewCard = $this->cardService->getCardById($opponentAvailableCards[0]);
-
+        $opponentNewCardId = $this->cardService->getRandomCardIdFromBaseStackExceptIds($user->getCardsIds());
+        $opponentNewCard = $this->cardService->getCardById($opponentNewCardId);
         $round = $duel->getRounds() + 1;
 
         $this->store(

@@ -28,10 +28,8 @@ class UserCardService
         $userCardsCount = $user->getCardsCount();
         throw_if(! $this->cardService->isNewCardAllowed($userLevel, $userCardsCount), new UserCardLimitException);
         
-        $availableCards = array_column($this->cardService->getCardsExceptIds($user->getCardsIds()), 'id');
-        shuffle($availableCards);
-
-        $this->store($userId, $availableCards[0]);
+        $newCardId = $this->cardService->getRandomCardIdFromBaseStackExceptIds($user->getCardsIds());
+        $this->store($userId, $newCardId);
 
         return response()->json([
             'message' => 'Success!'

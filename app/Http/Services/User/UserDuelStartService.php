@@ -29,6 +29,7 @@ class UserDuelStartService
 
         return response()->json();
     }
+    
     private function store(int $userId, string $playerName, string $opponentName): void
     {
         $this->duel

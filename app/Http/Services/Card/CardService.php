@@ -15,10 +15,6 @@ class CardService
         LevelService::LEVEL_3 => self::CARDS_PER_LEVEL_3,
     ];
 
-    public function __construct(
-        
-    ) {}
-
     public function getCards(): array
     {
         return config('game.cards');
@@ -72,5 +68,13 @@ class CardService
         }
 
         return $cardsById;
+    }
+
+    public function getRandomCardIdFromBaseStackExceptIds(array $cardIds): int
+    {
+        $cards = array_column($this->getCardsExceptIds($cardIds), 'id');
+        shuffle($cards);
+
+        return $cards[0];
     }
 }
