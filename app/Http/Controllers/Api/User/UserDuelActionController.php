@@ -17,7 +17,7 @@ class UserDuelActionController extends Controller
     public function storeUserDuelAction(UserDuelActionRequest $request): JsonResponse
     {
         try {
-           return $this->userDuelActionService->storeUserDuelAction(auth()->id(), $request->get('id'));
+           return $this->userDuelActionService->storeUserDuelAction(auth()->id(), $request->get('id', null));
         } catch (\Exception $exception) {
             return $this->errorResponse($exception->getMessage(), $exception->getCode());
         }

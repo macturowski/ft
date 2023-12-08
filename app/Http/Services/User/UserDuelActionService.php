@@ -25,7 +25,7 @@ class UserDuelActionService
         private CardService $cardService,
     ) {}
 
-    public function storeUserDuelAction(int $userId, int $cardId): JsonResponse
+    public function storeUserDuelAction(int $userId, ?int $cardId): JsonResponse
     {
         $user = $this->getUser($userId);
         throw_if(is_null($user), new UserNotFoundException);
@@ -33,9 +33,14 @@ class UserDuelActionService
         $duel = $this->getDuel($userId);
         throw_if(is_null($duel), new UserDuelNotFoundException);
 
-        $yourNewCard = $this->cardService->getCardById($cardId);
-        throw_if(! in_array($yourNewCard['id'], $user->getCardsIds()), new UserCardNotFoundException);
-        throw_if(in_array($yourNewCard['id'],  $duel->getYourCardsIds()), new UserCardUsedBeforeException);
+        if(is_null($cardId)) {
+            $yourNewCard['power'] = 0;
+            $yourNewCard['id'] = null;
+        } else {
+            $yourNewCard = $this->cardService->getCardById($cardId);
+            throw_if(! in_array($yourNewCard['id'], $user->getCardsIds()), new UserCardNotFoundException);
+            throw_if(in_array($yourNewCard['id'],  $duel->getYourCardsIds()), new UserCardUsedBeforeException);
+        }
 
         $opponentAvailableCards = array_column($this->cardService->getCardsExceptIds($duel->getOpponentCardsIds()), 'id');
         shuffle($opponentAvailableCards);
@@ -64,7 +69,7 @@ class UserDuelActionService
         return response()->json();
     }
 
-    private function store(int $round, int $yourPoints, int $opponentPoints, int $yourCardId, int $opponentCardId, Duel $duel): void
+    private function store(int $round, int $yourPoints, int $opponentPoints, ?int $yourCardId, int $opponentCardId, Duel $duel): void
     {
         $this->duelDetails
             ->create([

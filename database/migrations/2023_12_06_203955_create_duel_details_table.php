@@ -16,7 +16,7 @@ return new class extends Migration
             $table->smallInteger('round');
             $table->integer('your_points');
             $table->integer('opponent_points');
-            $table->tinyInteger('your_card_id');
+            $table->tinyInteger('your_card_id')->nullable();
             $table->tinyInteger('opponent_card_id');
             $table->unsignedBigInteger('duel_id');
             $table->timestamps();
