@@ -15,6 +15,8 @@ use App\Exceptions\UserCardUsedBeforeException;
 
 class UserDuelActionService
 {
+    private const MAX_ROUNDS = 5;
+
     public function __construct(
         private User $user,
         private Duel $duel,
@@ -31,31 +33,29 @@ class UserDuelActionService
         $duel = $this->getDuel($userId);
         throw_if(is_null($duel), new UserDuelNotFoundException);
 
-        $yourCard = $this->cardService->getCardById($cardId);
+        $yourNewCard = $this->cardService->getCardById($cardId);
+        throw_if(! in_array($yourNewCard['id'], $user->getCardsIds()), new UserCardNotFoundException);
+        throw_if(in_array($yourNewCard['id'],  $duel->getYourCardsIds()), new UserCardUsedBeforeException);
 
-        throw_if(! in_array($yourCard['id'], $user->cards->pluck('card_id')->toArray()), new UserCardNotFoundException);
-        throw_if(in_array($yourCard['id'], $duel->details->pluck('your_card_id')->toArray()), new UserCardUsedBeforeException);
+        $opponentAvailableCards = array_column($this->cardService->getCardsExceptIds($duel->getOpponentCardsIds()), 'id');
+        shuffle($opponentAvailableCards);
 
-        $opponentCardsIds = $duel->details->pluck('opponent_card_id')->toArray();
-        $opponentavailableCards = array_column($this->cardService->getCardsExceptIds($opponentCardsIds), 'id');
-        shuffle($opponentavailableCards);
+        $opponentNewCard = $this->cardService->getCardById($opponentAvailableCards[0]);
 
-        $opponentCard = $this->cardService->getCardById($opponentavailableCards[0]);
-        
-        $round = $duel->details->count() + 1;
+        $round = $duel->getRounds() + 1;
 
         $this->store(
             $round,
-            $yourCard['power'],
-            $opponentCard['power'],
-            $yourCard['id'],
-            $opponentCard['id'],
+            $yourNewCard['power'],
+            $opponentNewCard['power'],
+            $yourNewCard['id'],
+            $opponentNewCard['id'],
             $duel->id,
         );
         
-        if($round == 5) {
-            $yourPoints = $duel->details->sum('your_points') + $yourCard['power'];
-            $opponentPoints = $duel->details->sum('opponent_points') + $yourCard['power'];
+        if($round == self::MAX_ROUNDS) {
+            $yourPoints = $duel->yourPoints() + $yourNewCard['power'];
+            $opponentPoints = $duel->opponentPoints() + $opponentNewCard['power'];
             $won = $yourPoints > $opponentPoints ? 1 : 0;
 
             $this->closeDuel($duel, $won);
@@ -81,7 +81,7 @@ class UserDuelActionService
     {
         $duel->update([
             'status' => 1,
-            'won' => 1,
+            'won' => $won,
         ]); 
     }
 

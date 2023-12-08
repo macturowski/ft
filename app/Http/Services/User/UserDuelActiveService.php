@@ -36,11 +36,11 @@ class UserDuelActiveService
         }
         
         return response()->json([
-            'round' => $duel->details->count() + 1,
-            'your_points' => $duel->details->sum('your_points'),
-            'opponent_points' => $duel->details->sum('opponent_points'),
+            'round' => $duel->getRounds() + 1,
+            'your_points' => $duel->yourPoints(),
+            'opponent_points' => $duel->opponentPoints(),
             'status' => self::ACTIVE_STATUS_FLAG,
-            'cards' => $this->cardService->getCardsByIds($user->cards->pluck('card_id')->toArray()),
+            'cards' => $this->cardService->getCardsByIds($user->getCardsIds()),
         ]);
     }
 

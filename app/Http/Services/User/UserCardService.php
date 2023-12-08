@@ -23,10 +23,12 @@ class UserCardService
     {
         $user = $this->getUser($userId);
         throw_if(is_null($user), new UserNotFoundException);
-        throw_if(! $this->cardService->isNewCardAllowed($this->userLevelService->getLevel(count($user->duels)), count($user->cards)), new UserCardLimitException);
+
+        $userLevel = $this->userLevelService->getLevel($user->getDuelsCount());
+        $userCardsCount = $user->getCardsCount();
+        throw_if(! $this->cardService->isNewCardAllowed($userLevel, $userCardsCount), new UserCardLimitException);
         
-        $userCards = $user->cards->pluck('card_id')->toArray();
-        $availableCards = array_column($this->cardService->getCardsExceptIds($userCards), 'id');
+        $availableCards = array_column($this->cardService->getCardsExceptIds($user->getCardsIds()), 'id');
         shuffle($availableCards);
 
         $this->store($userId, $availableCards[0]);

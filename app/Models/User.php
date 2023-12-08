@@ -53,4 +53,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(Duel::class);
     }
+
+    public function getCardsIds(): array
+    {
+        return $this->cards->pluck('card_id')->toArray();
+    }
+
+    public function getDuelsCount(): int
+    {
+        return count($this->duels);
+    }
+
+    public function getCardsCount(): int
+    {
+        return count($this->cards);
+    }
 }

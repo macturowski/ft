@@ -20,8 +20,8 @@ class UserDuelStartService
     {
         $user = $this->getUser($userId);
         throw_if(is_null($user), new UserNotFoundException);
-        throw_if(count($user->cards) < 5, new UserHasTooFewCards);
-        throw_if(count($user->duels) > 0, new UserHasActiveDuel);
+        throw_if($user->getCardsCount() < 5, new UserHasTooFewCards);
+        throw_if($user->getDuelsCount() > 0, new UserHasActiveDuel);
 
         $this->store($userId, $user->name, fake()->name());
 

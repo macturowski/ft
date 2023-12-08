@@ -19,7 +19,12 @@ class UserDuelsHistoryService
         throw_if(is_null($user), new UserNotFoundException);
 
         return response()->json(
-            $user->duels->map->only(['id', 'player_name', 'opponent_name', 'won'])
+            $user->duels->map->only([
+                'id',
+                'player_name',
+                'opponent_name',
+                'won'
+            ])
         );
     }
 

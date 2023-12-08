@@ -27,4 +27,29 @@ class Duel extends Model
     {
         return $this->status == 1;
     }
+
+    public function yourPoints(): int
+    {
+        return $this->details->sum('your_points');
+    }
+
+    public function opponentPoints(): int
+    {
+        return $this->details->sum('opponent_points');
+    }
+
+    public function getRounds(): int
+    {
+        return $this->details->count();
+    }
+
+    public function getOpponentCardsIds(): array
+    {
+        return $this->details->pluck('opponent_card_id')->toArray();
+    }
+
+    public function getYourCardsIds(): array
+    {
+        return $this->details->pluck('your_card_id')->toArray();
+    }
 }

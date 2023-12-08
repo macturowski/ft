@@ -19,16 +19,15 @@ class UserDataService
     public function getUserData(int $userId): JsonResponse
     {
         $user = $this->getUser($userId);
-
         throw_if(is_null($user), new UserNotFoundException);
 
         return response()->json([
             'id' => $user->id,
             'username' => $user->name,
-            'level' => $userLevel = $this->userLevelService->getLevel(count($user->duels)),
-            'level_points' => $this->userLevelService->getLevelPoints(count($user->duels)),
-            'cards' => $this->cardService->getCardsByIds($user->cards->pluck('card_id')->toArray()),
-            'new_card_allowed' => $this->cardService->isNewCardAllowed($userLevel, count($user->cards)),
+            'level' => $userLevel = $this->userLevelService->getLevel($user->getDuelsCount()),
+            'level_points' => $this->userLevelService->getLevelPoints($user->getDuelsCount()),
+            'cards' => $this->cardService->getCardsByIds($user->getCardsIds()),
+            'new_card_allowed' => $this->cardService->isNewCardAllowed($userLevel, $user->getCardsCount()),
         ]);
     }
 
